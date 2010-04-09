@@ -52,3 +52,16 @@ Step(
     sys.p(files);
   }
 );
+
+var myfn = Step.fn(
+  function (name) {
+    fs.readFile(name, this);
+  },
+  function capitalize(err, text) {
+    if (err) {
+      throw err;
+    }
+    return text.toUpperCase();
+  }
+);
+myfn(__filename, sys.p);
