@@ -3,6 +3,19 @@ var Step = require(__dirname + "/lib/step"),
     sys = require('sys');
 
 Step(
+  function () {
+    var group = this.group();
+    [1,2,3,4,5,6].forEach(function (num) {
+      fs.readFile(__filename, group());
+    });
+  },
+  function (err, contents) {
+    if (err) { throw err; }
+    sys.p(contents);
+  }
+);
+
+Step(
   function readSelf() {
     fs.readFile(__filename, this);
   },
