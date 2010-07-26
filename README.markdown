@@ -47,7 +47,7 @@ Also there is support for parallel actions:
 
 Here we pass `this.parallel()` instead of `this` as the callback.  It internally keeps track of the number of callbacks issued and preserves their order then giving the result to the next step after all have finished.  If there is an error in any of the parallel actions, it will be passed as the first argument to the next step.
 
-Also you can use parallel with a dynamic number of common tasks.
+Also you can use group with a dynamic number of common tasks.
 
     Step(
       function readDir() {
@@ -55,20 +55,18 @@ Also you can use parallel with a dynamic number of common tasks.
       },
       function readFiles(err, results) {
         if (err) throw err;
-        // Create a closure to the parallel helper
-        var parallel = this.parallel;
+        // Create a new group
+        var group = this.group();
         results.forEach(function (filename) {
           if (/\.js$/.test(filename)) {
-            fs.readFile(__dirname + "/" + filename, parallel());
+            fs.readFile(__dirname + "/" + filename, group());
           }
         });
       },
-      function showAll(err /*, file1, file2, ...*/) {
+      function showAll(err , files) {
         if (err) throw err;
-        var files = Array.prototype.slice.call(arguments, 1);
         sys.p(files);
       }
     );
 
-
-Note that we had to create a reference to the `this.parallel` function since the `forEach` creates a new scope and changes `this`.  Then using arguments surgery we can extract the contents of the files.
+*Note* that we both call `this.group()` and `group()`.  The first reserves a slot in the parameters of the next step, then calling `group()` generates the individual callbacks and increments the internal counter.
