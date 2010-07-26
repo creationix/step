@@ -15,13 +15,12 @@ The step library exports a single function I call `Step`.  It accepts any number
         fs.readFile(__filename, this);
       },
       function capitalize(err, text) {
-        if (err) {
-          throw err;
-        }
+        if (err) throw err;
         return text.toUpperCase();
       },
       function showIt(err, newText) {
-        sys.puts(newText);
+        if (err) throw err;
+        console.log(newText);
       }
     );
 
@@ -59,7 +58,7 @@ Also you can use group with a dynamic number of common tasks.
         var group = this.group();
         results.forEach(function (filename) {
           if (/\.js$/.test(filename)) {
-            fs.readFile(__dirname + "/" + filename, group());
+            fs.readFile(__dirname + "/" + filename, 'utf8', group());
           }
         });
       },
