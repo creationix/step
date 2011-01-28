@@ -31,3 +31,17 @@ Step(
     assert.deepEqual(dirResults, files);
   }
 );
+
+expect('four');
+expect('five');
+// When the group is empty, it should fire with an empty array
+Step(
+  function start() {
+    var group = this.group();
+    fulfill('four');
+  },
+  function readFiles(err, results) {
+    fulfill('five');
+    assert.deepEqual(results, []);
+  }
+);
