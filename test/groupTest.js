@@ -31,3 +31,14 @@ Step(
     assert.deepEqual(dirResults, files);
   }
 );
+
+// Test to make sure groups of zero size terminate
+expect('group of zero terminated');
+Step(
+  function makeGroup() {
+    this.group();
+  },
+  function terminate() {
+    fulfill('group of zero terminated');
+  }
+)
