@@ -21,7 +21,7 @@ Step(
   }
 );
 
-// Test lock functionality with N sized groups
+// Test lock functionality with N parallel calls
 expect("test2: 1");
 expect("test2: 1,2,3");
 expect("test2: 2");
