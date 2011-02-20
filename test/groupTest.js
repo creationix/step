@@ -33,12 +33,66 @@ Step(
 );
 
 // Test to make sure groups of zero size terminate
-expect('group of zero terminated');
+expect('test2: group of zero terminated');
 Step(
   function makeGroup() {
     this.group();
   },
   function terminate() {
-    fulfill('group of zero terminated');
+    fulfill('test2: group of zero terminated');
   }
-)
+);
+
+// Test lock functionality with N sized groups
+expect("test3: 1");
+expect("test3: 1,2,3");
+expect("test3: 2");
+Step(
+    function() {
+        return 1;
+    },
+    function makeGroup(err, num) {
+        if(err) throw err;
+        fulfill("test3: " + num);
+        var group = this.group();
+        
+        setTimeout((function(callback) { return function() { callback(null, 1); } })(group()), 100);
+        group()(null, 2);
+        setTimeout((function(callback) { return function() { callback(null, 3); } })(group()), 0);
+    },
+    function groupResults(err, results) {
+        if(err) throw err;
+        fulfill("test3: " + results);
+        return 2
+    },
+    function terminate(err, num) {
+        if(err) throw err;
+        fulfill("test3: " + num);
+    }
+);
+
+// Test lock functionality with zero sized groups
+expect("test4: 1");
+expect("test4: empty array");
+expect("test4: group of zero terminated");
+expect("test4: 2");
+Step(
+    function() {
+        return 1;
+    },
+    function makeGroup(err, num) {
+        if(err) throw err;
+        fulfill("test4: " + num);
+        this.group();
+    },
+    function groupResults(err, results) {
+        if(err) throw err;
+        if(results.length === 0) { fulfill("test4: empty array"); }
+        fulfill('test4: group of zero terminated');
+        return 2
+    },
+    function terminate(err, num) {
+        if(err) throw err;
+        fulfill("test4: " + num);
+    }
+);

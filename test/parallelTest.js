@@ -20,3 +20,30 @@ Step(
     assert.equal(etcText, users, "Users should come second");
   }
 );
+
+// Test lock functionality with N sized groups
+expect("test2: 1");
+expect("test2: 1,2,3");
+expect("test2: 2");
+Step(
+    function() {
+        return 1;
+    },
+    function makeParallelCalls(err, num) {
+        if(err) throw err;
+        fulfill("test2: " + num);
+        
+        setTimeout((function(callback) { return function() { callback(null, 1); } })(this.parallel()), 100);
+        this.parallel()(null, 2);
+        setTimeout((function(callback) { return function() { callback(null, 3); } })(this.parallel()), 0);
+    },
+    function parallelResults(err, one, two, three) {
+        if(err) throw err;
+        fulfill("test2: " + [one, two, three]);
+        return 2
+    },
+    function terminate(err, num) {
+        if(err) throw err;
+        fulfill("test2: " + num);
+    }
+)
