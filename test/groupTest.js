@@ -41,6 +41,7 @@ Step(
     fulfill('four');
   },
   function readFiles(err, results) {
+    if (err) throw err;
     fulfill('five');
     assert.deepEqual(results, []);
   }
