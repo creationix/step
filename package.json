@@ -1,7 +1,7 @@
 { "name": "step",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple control-flow library for node.JS that makes parallel execution, serial execution, and error handling painless.",
-  "engine": [ "node >=0.1.90" ],
+  "engine": [ "node >=0.2.0" ],
   "author": "Tim Caswell <tim@creationix.com>",
   "repository":
   { "type" : "git",
