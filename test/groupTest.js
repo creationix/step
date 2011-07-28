@@ -100,3 +100,35 @@ Step(
         fulfill("test4: " + num);
     }
 );
+
+
+// Test lock functionality with groups which return immediately
+expect("test5: 1,2");
+expect("test5 t1: 666");
+expect("test5 t2: 333");
+setTimeout(function() {
+Step(
+  function parallelCalls() {
+    var group = this.group();
+    var p1 = group(), p2 = group();
+    p1(null, 1);
+    p2(null, 2);
+  },
+  function parallelResults(err, results) {
+    if(err) throw err;
+    fulfill("test5: " + results);
+    return 666;
+  },
+  function terminate1(err, num) {
+    if(err) throw err;
+    fulfill("test5 t1: " + num);
+    var next = this;
+    setTimeout(function() { next(null, 333); }, 50);
+  },
+  function terminate2(err, num) {
+    if(err) throw err;
+    fulfill("test5 t2: " + num);
+    this();
+  }
+);
+}, 1000);
