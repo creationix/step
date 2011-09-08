@@ -47,3 +47,61 @@ Step(
         fulfill("test2: " + num);
     }
 )
+
+
+// Test lock functionality with parallel calls with delay
+expect("test3: 1,2");
+expect("test3 t1: 666");
+expect("test3 t2: 333");
+Step(
+  function parallelCalls() {
+    var p1 = this.parallel(), p2 = this.parallel();
+    process.nextTick(function() { p1(null, 1); });
+    process.nextTick(function() { p2(null, 2); });
+  },
+  function parallelResults(err, one, two) {
+    if(err) throw err;
+    fulfill("test3: " + [one, two]);
+    return 666;
+  },
+  function terminate1(err, num) {
+    if(err) throw err;
+    fulfill("test3 t1: " + num);
+    var next = this;
+    setTimeout(function() { next(null, 333); }, 50);
+  },
+  function terminate2(err, num) {
+    if(err) throw err;
+    fulfill("test3 t2: " + num);
+    this();
+  }
+);
+
+
+// Test lock functionality with parallel calls which return immediately
+expect("test4: 1,2");
+expect("test4 t1: 666");
+expect("test4 t2: 333");
+Step(
+  function parallelCalls() {
+    var p1 = this.parallel(), p2 = this.parallel();
+    p1(null, 1);
+    p2(null, 2);
+  },
+  function parallelResults(err, one, two) {
+    if(err) throw err;
+    fulfill("test4: " + [one, two]);
+    return 666;
+  },
+  function terminate1(err, num) {
+    if(err) throw err;
+    fulfill("test4 t1: " + num);
+    var next = this;
+    setTimeout(function() { next(null, 333); }, 50);
+  },
+  function terminate2(err, num) {
+    if(err) throw err;
+    fulfill("test4 t2: " + num);
+    this();
+  }
+);
