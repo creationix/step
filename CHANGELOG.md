@@ -2,7 +2,7 @@
 
 step follows [Semantic Versioning][semver].
 
-## 1.0.0 - Future
+## 1.0.0 - 2017-01-05
 
 ### Improved
 
